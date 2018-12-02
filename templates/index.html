@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content=" Axis Bank Signature recognition system ">
+    <meta name="author" content="">
+    <meta http-equiv='cache-control' content='no-cache'> 
+    <meta http-equiv='expires' content='0'>
+    <meta http-equiv='pragma' content='no-cache'>
+
+    <title>Axis Bank </title>
+    <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+    <link rel="icon" href="../static/favicon.png" sizes="16x16" type="image/png">
+    <!-- Bootstrap core CSS-->
+    <link href="../static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <!-- Custom fonts for this template-->
+    
+    <!-- Page level plugin CSS-->
+    <link href="../static/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+    <link href="../static/css/loader.css" rel="stylesheet">
+    <!-- Custom styles for this template-->
+    <link href="../static/css/sb-admin.css" rel="stylesheet">
+    <link href="../static/css/multi-progress.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropper/4.0.0/cropper.css" rel="stylesheet">
+  </head>
+
+  <style>
+      body{
+          font-family: "Lato";
+          
+      }
+      #axisLogo{
+        margin-top: 2px;  
+          margin-right: 8px;
+          margin-left: 8px;
+          height: 40px;
+          width:40px;
+      }
+      #axisNavBar{
+          background-color: #ae285d;
+          
+      }
+      #cropImage{
+        max-width: 100%;
+        max-height: 100%;
+      }
+      #cropDiv{
+        width:100%;
+        height: 300px;
+      }
+      nav span{
+          font-size: 13px;
+          margin-left: 10px;
+        color: whitesmoke;
+      }
+      .cropper-conaimer{
+          width: 100%;
+      }
+      #teamLogo{
+          object-fit:contain;
+           height: 300px;
+          width: 100%;
+      }
+      .browseControls{
+          cursor: pointer;
+          height: 100px;
+          width:100px;
+      }
+      .browseControls:hover i{
+        color:#ae285d;
+       transition-duration: 0.4s;
+      }
+      .browseControls i{
+          font-size: 50px;
+          color: darkgrey;
+      }
+      #browseFile{
+          cursor: pointer;
+      }
+      #restoreButton{
+          color:#ae285d;
+          background-color: white;
+          padding:12px;
+          position: fixed;
+          bottom:5%;
+          right:3%;
+          text-align: center;
+          width:70px;
+          height:70px;
+          font-size:30px;
+          text-decoration: none;
+          border-radius: 50%;
+      }
+      #captureImage{
+        color:#ae285d;
+          background-color: white;
+          padding:12px;
+          position: fixed;
+          bottom:22%;
+          right:3%;
+          text-align: center;
+          width:70px;
+          height:70px;
+          font-size:30px;
+          text-decoration: none;
+          border-radius: 50%;
+      }
+      #captureImage:hover {
+        background-color:#fbeaf1;
+        transition-duration: 0.2s;
+      }
+      #restoreButton:hover{
+        background-color: #fbeaf1;
+        transition-duration: 0.2s;
+      }
+      #screenOverlay{
+        position: absolute;
+        height: 300px;
+        width: 100%;
+        border:5px;
+        border-top-width: 75px;
+        border-left-width: 40px;
+        border-right-width: 40px;
+        border-bottom-width: 75px;
+        border-style: solid;
+        border-radius: 3px;
+        border-color: rgba(0,0,0,0.3);
+        z-index: 1000;
+      }
+      #videoPlayer{
+        border-radius: 3px;
+        left:0%;
+        width:500px;
+        height: 300px;
+        position: absolute;
+      }
+      #capturedImage{
+        border-radius: 3px;
+        left:0%;
+        z-index:10000;
+        width:500px;
+        height: 300px;
+      }
+      #indication{
+        z-index: 2000;
+        left:25%;
+        top:15%;
+        color:white;
+        position: absolute;
+      }
+      #loaderContainer{
+        background-color: white;
+        top: 0%;
+        position: relative;
+        height: 300px;
+        width:100%;
+      }
+      #loader{
+        position: absolute;
+        text-align: center;
+        color: #ae285d;
+        top: 40%;
+        left: 45%;
+      }
+      #resultContainer{
+        width:100%;       
+      }
+      #verdict i{
+        font-size: 50px;       
+      }
+      #verdict{
+        padding-top: 50px;
+      }
+      .fa-check-circle{
+        color:green;
+      }
+      .fa-times-circle{
+        color: #cc0000;
+      }
+      #info{
+        padding: 10px;
+      }
+
+    </style>
+
+  <body id="page-top" style="background-image: url('../static/img/pattern.jpg');"> 
+
+    <nav style="background-color:#ae285d;" id="axisNavBar" class="navbar shadow-sm navbar-expand navbar-dark static-top">
+        <img src="../static/img/Logo.png" height="40" width="40"  id="axisLogo" >
+      <a class="navbar-brand mr-1" href="https://www.axisbank.com/">AXIS BANK</a> <span style="font-size:28px;" > | </span> <span> SIGNATURE RECOGNITION SYSTEM  </span>
+      <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+          </form>
+       <ul class="navbar-nav ml-auto ml-md-0">
+              <!-- Button trigger modal -->
+
+        <a data-toggle="modal" href="#" data-target="#exampleModal" style="color:white;font-size:25px;" ><i class="fas fa-info-circle"></i></a>
+                        
+          </ul>
+    </nav>
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">About</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div id="teamLogo">
+                  <img src="static/img/DataBenders.png" style="width:100%;" >
+              </div>
+                ...
+            </div>
+            
+          </div>
+        </div>
+      </div>
+ 
+      <div id="content-wrapper">
+
+        <div class="container-fluid">
+            <!-- Multi Step Progress Area -->
+            <center>
+            <div>
+                <!-- multistep form -->
+<form id="msform">
+        <!-- progressbar -->
+        <ul id="progressbar">
+          <li class="active">Welcome</li>
+          <li>Select Image</li>
+          <li>Crop & EDIT</li>
+          <li>SCAN / ADD</li>
+        </ul>
+        <!-- fieldsets -->
+        <fieldset>
+          <h1 class="fs-title">Welcome</h1>
+          <p> Welcome to the Axis Bank Signature Recognition System where you can match the applicant's signature with the owner of the Account and also you can add signature image of customer to its Database . <br><small class="fs-subtitle">click next to select image </small></p>
+          <input type="button" name="next" class="next action-button" value="Next" />
+        </fieldset>
+        <fieldset>
+          <h2 class="fs-title">Select Image</h2>
+          <h3 class="fs-subtitle">Upload & Browse Image</h3>
+          <img id="blah" src="http://placehold.it/180" alt="your image" />
+          <canvas id="capturedImage" height="300" width="500" ></canvas>
+          <div style="width:100%;height:300px;position: relative;text-align: center;" id="videoBucket" >
+            <span id="indication" > Signature should be cover in this area </span>
+            <video  style="object-fit:cover;width:100%;height:300px;" autoplay="true" id="videoPlayer"></video>
+            <div id="screenOverlay">  </div>
+           
+          </div>
+         
+          <br>
+          
+        <div class="row" id="browseControls" >
+            <div class="col-5">
+                    <div class="browseControls" style="float:right;margin-right: -20px;" id="browseFile" >
+                            <i class="fas fa-file-image"></i>
+                            <br>
+                            <span> Browse Image </span>
+                     </div>
+            </div>
+            <div class="col-2">
+                <div style="margin-top:20px;">
+                        <span  > OR </span>
+                </div>
+              
+            </div>
+        <div class="col-5">
+         <div class="browseControls" id="triggerCamera"  style="margin-left: -20px;"  >
+                <i class="fas fa-camera"></i>
+                <br>
+                <span> Take Image </span>
+         </div>
+        </div>
+    </div>
+          <input type="file" accept="image/*" id="fileInput" onchange="readURL(this);" hidden />
+          <input type="button" name="previous" class="previous action-button" value="Previous" />
+          <input type="button" name="next" class="next action-button" disabled id="triggerCropper" value="Next" data-toggle="tooltip" data-placement="right" title="Please select the image" />
+        </fieldset>
+        <fieldset>
+                <h2 class="fs-title">Crop & EDIT</h2>
+                <h3 class="fs-subtitle">Here you can cut out the signature area instead of complete doc.</h3>
+                <div id="cropDiv"><img style="max-width:100%;" id="cropImage" src=""> 
+                </div>
+                <input type="button" name="previous" class="previous action-button" value="Previous" />        
+                <input type="button" name="next"  id="cropButton" class="next action-button" value="Crop & Next" />
+              </fieldset>
+        <fieldset>
+          <h2 class="fs-title"> SCAN & ADD</h2>
+          <h3 class="fs-subtitle">Final Step to scan the cropped docs.</h3>
+          <div >
+            <img id="finalImage" src="http://placehold.it/180" />
+            <div id="loaderContainer">
+              <div  id="loader" class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div><br>
+            </div>
+            <div id="resultContainer">
+              <div class="row">
+              <div class="col">
+                <div id="info"></div>
+              </div>
+              <div class="col">
+                <div id="verdict"></div>
+                <h3 class="fs-subtitle">Threshold set at distance :- 9 </h3>
+              </div>
+            </div>
+            </div>
+            <div id="formContainer">
+            <form>
+              <div class="form-group">
+                <label for="exampleInputEmail1" style="float:left;" > Customer's Account Number</label>
+                <input type="text" class="form-control" id="accountInput" aria-describedby="emailHelp" placeholder="Enter Account Number">
+              </div>
+              <div class="form-group">
+                <label for="exampleInputPassword1" style="float:left;" >Customer Name</label>
+                <input type="text" class="form-control" id="customerInput" placeholder="Enter Customer Name">
+              </div>
+            </form>
+          </div>
+          </div>
+          <div id="inputFieldControls" > 
+            <input type="button" name="previous" class="previous action-button" value="Previous" />
+            <input type="submit" name="submit" class="submit action-button" id="triggerAdd"  value="Add" />
+            <input type="submit" name="submit" class="submit action-button" id="triggerScan" value="Scan" />
+           </div>
+        </fieldset>
+      </form>
+            </div>
+        </center>
+        </div>
+        <!-- /.container-fluid -->
+      </div>
+      <!-- /.content-wrapper -->
+    
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+      <i class="fas fa-angle-up"></i>
+    </a>
+
+    <a id="restoreButton" class="shadow" href="">
+            <i class="fas fa-undo"></i><br>
+            <span style="font-size: 15px;"> Restore </span>
+    </a>
+
+    <a id="captureImage" class="shadow" href="#">
+      <i class="fas fa-camera"></i><br>
+      <span style="font-size: 15px;"> Capture </span>
+</a>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            <a class="btn btn-primary" href="login.html">Logout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="../static/vendor/jquery/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropper/4.0.0/cropper.js"></script>
+    <script src="../static/js/multi-progress.js"></script>
+    <script src="../static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="../static/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="../static/js/sb-admin.min.js"></script>
+
+    <!-- Demo scripts for this page-->
+  
+    <script>
+
+/*
+|========================================================================================================|
+|````````````````````````````````````````````````````````````````````````````````````````````````````````|
+|`````````````````````````````````██████╗  █████╗ ████████╗ █████╗ ``````````````````````````````````````|
+|`````````````````````````````````██╔══██╗██╔══██╗╚══██╔══╝██╔══██╗``````````````````````````````````````|    
+|`````````````````````````````````██║``██║███████║```██║```███████║``````````````````````````````````````|
+|`````````````````````````````````██║``██║██╔══██║```██║```██╔══██║``````````````````````````````````````|
+|`````````````````````````````````██████╔╝██║``██║```██║```██║``██║``````````````````````````````````````|
+|`````````````````````````````````╚═════╝ ╚═╝``╚═╝```╚═╝```╚═╝``╚═╝``````````````````````````````````````|
+|``````````````````````██████╗ ███████╗███╗```██╗██████╗ ███████╗██████╗ ███████╗````````````````````````|
+|``````````````````````██╔══██╗██╔════╝████╗``██║██╔══██╗██╔════╝██╔══██╗██╔════╝````````````````````````|
+|``````````````````````██████╔╝█████╗``██╔██╗`██║██║``██║█████╗``██████╔╝███████╗````````````````````````|
+|``````````````````````██╔══██╗██╔══╝``██║╚██╗██║██║``██║██╔══╝``██╔══██╗╚════██║````````````````````````|
+|``````````````````````██████╔╝███████╗██║ ╚████║██████╔╝███████╗██║``██║███████║````````````````````````|
+|``````````````````````╚═════╝ ╚══════╝╚═╝  ╚═══╝╚═════╝ ╚══════╝╚═╝``╚═╝╚══════╝````````````````````````|
+|========================================================================================================|
+|                        Project for Axis Bank ( SIGNATURE RECOGNITION SYSTEM )                          |
+|========================================================================================================|
+*/
+
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+
+      // All Global variables which are the parameters of json sending package ---->
+        var accountNo;
+        var customerName;
+        var finalImage ;
+
+      // function for making preview of selected image before proceed further ------> 
+        function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#blah').attr('src', e.target.result);
+                $("#cropImage").attr('src',e.target.result);
+            };
+            $("#browseControls").hide();
+            $("#blah").show();
+            $("#triggerCropper").removeAttr('disabled');
+            $("#triggerCropper").tooltip('dispose');  
+            reader.readAsDataURL(input.files[0]);
+         }
+        }
+      
+      // function for get the current camera stream to capture image -------------->
+       function getCameraFeed(){
+          var videoPlayer = document.getElementById("videoPlayer");
+            navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia;
+            if (navigator.getUserMedia) {       
+                navigator.getUserMedia({video: true,audio:false}, handleVideo, videoError);
+            }
+            
+            function handleVideo(stream) {
+                videoPlayer.srcObject =  stream;
+                videoPlayer.onloadedmetadata = function(e) {
+                  $("#browseControls").hide();
+                  $("#videoBucket").fadeIn("slow");
+                  $("#captureImage").fadeIn('slow');
+                  videoPlayer.play();
+             }; 
+            }
+            function videoError(e) {
+                alert("Permission needed for capture image !");
+            }
+        }
+       
+       // validation for account number and customer name before sending to server ----->
+       function checkFields(){
+          var account = $("#accountInput").val();
+          var customer = $("#customerInput").val();
+          if( customer == '' &&  account == '' ){
+              alert('Please fill the Customer Account No. and Name.');
+              return false ;
+          }else{
+            accountNo = account;
+            customerName = customer;
+            return true;
+          }
+       }
+
+       // wrap complete data in JSON format ----------------------------------->
+       function sendData(){
+        if( checkFields() ){
+              var bucket = {
+                'finalImage':finalImage,
+                'accountNo':accountNo,
+                'customerName':customerName
+              }
+              $('#formContainer').hide();
+              $("#finalImage").hide();
+              $("#loaderContainer").show();
+              return bucket;
+            }else{
+              return false;
+            }
+       }
+
+       // function for capture image of document from webcam ------------------>
+       function captureImage(){
+          var canvas = document.getElementById("capturedImage");
+          var videoPlayer = document.getElementById("videoPlayer");
+          var cropImage = $("#cropImage");
+          var ctx = canvas.getContext('2d');
+          canvas.width = videoPlayer.videoWidth;
+          canvas.height = videoPlayer.videoHeight;
+          ctx.drawImage(videoPlayer,0,0);
+          var data = canvas.toDataURL('image/png');
+          cropImage.attr('src', data);
+          $("#videoBucket").hide();
+          $("#captureImage").hide();
+          $("#capturedImage").show();
+          $("#triggerCropper").removeAttr('disabled');
+          $("#triggerCropper").tooltip('dispose');
+          return data;
+       }
+
+       // Generate Result after getting response from server -------------------->
+       function resultGenerate(data){
+         $("#inputFieldControls").hide();
+         $("#verdict").html("");
+         $("#info").html("");
+         if( data['action'] === 'scan' ){
+           
+              if( data['verdict'] === 'PASS' ){
+                $("#verdict").html('<i class="fas fa-check-circle"></i><br><span style="color:green"> PASS </span>');
+               confidence = '<h4> Euclidian Distance </h4><span>'+ data['confidence'] +'</span>';
+             $("#info").append(confidence);
+             }else if(data['verdict'] === 'FAIL'){
+              $("#verdict").html('<i class="fas fa-times-circle"></i><br><span style="color:#cc0000"> FAIL </span>');
+               confidence = '<h4> Euclidian Distance </h4><span>'+ data['confidence'] +'</span>';
+             $("#info").append(confidence);
+             }else{
+               alert(' Data Not found! \nPlease Try again.');
+               location.reload();
+             }
+             
+         }else{
+           if(data['performed']){
+            $("#verdict").html('<i class="fas fa-check-circle"></i><br><span style="color:green"> DATA STORED IN DATABASE </span>');
+           }else{
+            $("#verdict").html('<i class="fas fa-times-circle"></i><brconf><span style="color:#cc0000"> DATA ENTRY FAILED </span>');
+           }
+         }
+         if(data['verdict'] === 'LOST' ){
+            $("#resultContainer").append(' Data Not Available in Database ! ');
+         }else{
+           accountNo = '<h4> Account No. </h4><span>'+ data['accountNo'] +'</span>';
+           confidence = '<h4> Confidence. </h4><span>'+ data['confidence'] +'</span>';
+           customerName = '<h4> Customer Name </h4><span>'+ data['customerName'] +'</span>';
+           $("#info").append(accountNo,customerName);
+           $('#finalImage').show();
+         }
+         $('#loaderContainer').hide();
+         $("#resultContainer").fadeIn();
+       }
+
+        $(document).ready(function(){
+          
+          // Defining sockets and objects -------------->
+          var socket = io.connect();
+          var cropImage = $('#cropImage');
+
+          // listening socket events -------------------->
+          socket.on('test',function(data){
+            console.log(data);
+          });
+          socket.on('result',function(data){
+              resultGenerate(data);   
+          });
+
+          // hiding all DOMs ---------------------------->
+          $("#blah").hide();
+          $("#resultContainer").hide();
+          $("#videoBucket").hide();
+          $("#loaderContainer").hide();
+          $("#captureImage").hide();
+          $("#capturedImage").hide();
+          $("#restoreButton").attr('href',window.location.href);
+
+          // click functions for generate components and define operations ---->
+          $("#browseFile").click(function(){
+              $("#fileInput").click();
+          });
+          $("#triggerCropper").click(function(){
+              cropImage.cropper({cropBoxResizable:true });                
+          });
+          $("#triggerCamera").click(function(){
+              getCameraFeed();                
+          });
+          $("#triggerScan").click(function(){
+            $("#resultContainer").hide();
+          
+            if(sendData()){
+              bucket = sendData();
+              socket.emit('scan-blob',bucket);
+              } else{
+                //
+              } 
+            
+          });
+          $("#triggerAdd").click(function(){
+            $("#resultContainer").hide();
+          
+              if(sendData()){
+                bucket = sendData();
+                socket.emit('add-blob',bucket);
+              } else{
+                //
+              }    
+          });
+          $("#captureImage").click(function(){
+              finalImage =  captureImage();                
+          });
+         $("#cropButton").click(function(){
+          $("#cropImage").cropper('getCroppedCanvas').toBlob(function(blobb){
+              finalImage = blobb;
+              blobURL = URL.createObjectURL(blobb);
+             $("#finalImage").attr('src',blobURL);
+          });
+         });
+        });
+        </script>
+
+  </body>
+
+</html>

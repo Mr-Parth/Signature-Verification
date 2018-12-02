@@ -1,0 +1,9 @@
+account_no,customer_name,signature_image
+1234567,first,account_images/1234567.png
+198,test1,account_images/198.png
+152,,account_images/152.png
+00,,account_images/00.png
+002,,account_images/002.png
+75321489,test name,account_images/75321489.png
+13,,account_images/13.png
+19965,Test,account_images/19965.png
