@@ -6,7 +6,8 @@
 		 3.) Hitesh Gorana             =>  	Machine Learning 	     
 	
 ################################## Our View ###########################################
---
+
+We built this web app with the mindset of thinking of Axis Bank representatives as its end user. It consists of two main function:- 1) Add a new user and his/her signature:- Signature along with user details in the database 2) Verify signature:- the Real signature will be fetched from the database and will be compared with the test signature. We build a siemese network and output the Euclidian Distance between feature vectors of both signatures.
 
 
 ################################# Technical Stack #######################################
